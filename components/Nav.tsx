@@ -146,6 +146,7 @@ const Nav = () => {
       <NavItem to="/how-to-make-a-flow-map">How to make a flow map</NavItem>
       <NavItem to="/privacy">Privacy</NavItem>
       <NavItem to="/credits">Credits</NavItem>
+      <NavItem to="/from-api">From API</NavItem>
       <div className="right-links">
         {/*<Away href="https://github.com/sponsors/ilyabo">*/}
         {/*  <LinkItem>*/}

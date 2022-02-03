@@ -1,0 +1,11 @@
+---
+apps:
+  - name: flowmap-plus
+    script: 'npm'
+    args: 'run staging'
+    no-daemon: false
+    log_date_format: YYYY-MM-DD HH:mm:ss
+    min_uptime: 10000
+    max_restarts: 1
+    env_staging:
+      APP_ENV: staging

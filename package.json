@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "staging": "next dev -p 3800",
     "build": "next build",
     "start": "next start",
     "lint": "next lint --no-cache",
