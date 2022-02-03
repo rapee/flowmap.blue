@@ -20,6 +20,16 @@ const TIME_QUERY_FORMAT = '%Y%m%dT%H%M%S';
 const timeToQuery = timeFormat(TIME_QUERY_FORMAT);
 const timeFromQuery = timeParse(TIME_QUERY_FORMAT);
 
+function _titleCase(str: string): string {
+  return str[0].toUpperCase() + str.slice(1);
+}
+function titleCase(str: string): string {
+  return str
+    .split('_')
+    .map((s) => _titleCase(s))
+    .join('');
+}
+
 export function mapTransition(duration: number = 500) {
   return {
     transitionDuration: duration,
@@ -72,6 +82,11 @@ export interface State {
   baseMapOpacity: number;
   colorSchemeKey: string | undefined;
   selectedFlowsSheet: string | undefined;
+
+  selectedFilterTripType: string[] | undefined;
+  selectedFilterGender: string[] | undefined;
+  selectedFilterAcctType: string[] | undefined;
+  selectedFilterAgeRange: string[] | undefined;
 }
 
 export enum ActionType {
@@ -98,6 +113,8 @@ export enum ActionType {
   SET_FADE_AMOUNT = 'SET_FADE_AMOUNT',
   SET_BASE_MAP_OPACITY = 'SET_BASE_MAP_OPACITY',
   SET_COLOR_SCHEME = 'SET_COLOR_SCHEME',
+
+  SET_SELECTED_FILTER = 'SET_SELECTED_FILTER',
 }
 
 export type Action =
@@ -130,6 +147,11 @@ export type Action =
   | {
       type: ActionType.SET_SELECTED_LOCATIONS;
       selectedLocations: string[] | undefined;
+    }
+  | {
+      type: ActionType.SET_SELECTED_FILTER;
+      key: string;
+      selectedValues: string[] | undefined;
     }
   | {
       type: ActionType.SET_LOCATION_FILTER_MODE;
@@ -283,6 +305,23 @@ function mainReducer(state: State, action: Action): State {
         selectedLocations,
       };
     }
+    case ActionType.SET_SELECTED_FILTER: {
+      const {key, selectedValues} = action;
+      const isEmpty = !selectedValues || selectedValues.length === 0;
+      const selectedStateKey = titleCase(key);
+      console.log(selectedStateKey, 'selectedStateKey');
+      if (isEmpty) {
+        return {
+          ...state,
+          [selectedStateKey]: undefined,
+        };
+      }
+      return {
+        ...state,
+        [selectedStateKey]: selectedValues,
+      };
+    }
+
     case ActionType.SET_LOCATION_FILTER_MODE: {
       const {mode} = action;
       return {
@@ -436,6 +475,13 @@ export function asBoolean(v: string | string[] | null | undefined): boolean | un
   return undefined;
 }
 
+export function asChoices(v: string | string[] | null | undefined): string[] | undefined {
+  if (typeof v === 'string' && v.length > 0) {
+    return v.split(',');
+  }
+  return undefined;
+}
+
 export function applyStateFromQueryString(draft: State, params: ParsedUrlQuery) {
   if (typeof params.s === 'string') {
     const rows = csvParseRows(params.s);
@@ -471,6 +517,12 @@ export function applyStateFromQueryString(draft: State, params: ParsedUrlQuery) 
   draft.clusteringEnabled = asBoolean(params.c) ?? draft.clusteringEnabled;
   draft.clusteringAuto = asBoolean(params.ca) ?? draft.clusteringAuto;
   draft.locationTotalsEnabled = asBoolean(params.lt) ?? draft.locationTotalsEnabled;
+
+  draft.selectedFilterTripType = asChoices(params.trip_type) ?? draft.selectedFilterTripType;
+  draft.selectedFilterGender = asChoices(params.gender) ?? draft.selectedFilterGender;
+  draft.selectedFilterAcctType = asChoices(params.acct_type) ?? draft.selectedFilterAcctType;
+  draft.selectedFilterAgeRange = asChoices(params.age_range) ?? draft.selectedFilterAgeRange;
+
   if (params.lfm != null && (params.lfm as string) in LocationFilterMode) {
     draft.locationFilterMode = params.lfm as LocationFilterMode;
   }
@@ -572,6 +624,11 @@ export function getInitialState(config: Config, query: ParsedUrlQuery) {
     colorSchemeKey: config[ConfigPropName.COLORS_SCHEME],
     selectedFlowsSheet: undefined,
     selectedTimeRange: undefined,
+
+    selectedFilterTripType: undefined,
+    selectedFilterGender: undefined,
+    selectedFilterAcctType: undefined,
+    selectedFilterAgeRange: undefined,
   };
 
   const bbox = config[ConfigPropName.MAP_BBOX];

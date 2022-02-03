@@ -57,6 +57,7 @@ import NoScrollContainer from './NoScrollContainer';
 import styled from '@emotion/styled';
 import {IconNames} from '@blueprintjs/icons';
 import LocationsSearchBox from './LocationSearchBox';
+import SelectFilterBox from './SelectFilterBox';
 import Away from './Away';
 import {
   Action,
@@ -117,6 +118,7 @@ import {TimeGranularity} from './time';
 import {findAppropriateZoomLevel} from '@flowmap.gl/cluster/dist-esm';
 import {useRouter} from 'next/router';
 import {getFlowsSheetKey, makeGSheetsMapUrl} from '../components/constants';
+import { stringify } from 'querystring';
 
 const CONTROLLER_OPTIONS = {
   type: MapController,
@@ -193,7 +195,6 @@ const FlowMap: React.FC<Props> = (props) => {
   const deckRef = useRef<any>();
   const router = useRouter();
   const initialState = useMemo<State>(() => getInitialState(config, router.query), [config]);
-
   const outerRef = useRef<HTMLDivElement>(null);
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(reducer, initialState);
@@ -633,6 +634,22 @@ const FlowMap: React.FC<Props> = (props) => {
       </Message>
     );
   }
+
+  const tripTypeChoices = ['overnight', 'oneday'];
+  const genderChoices = ['M', 'F', 'U'];
+  const acctTypeChoices = ['Prepaid', 'Postpaid'];
+  const ageRangeChoices = [
+    '01.0-10',
+    '02.11-19',
+    '03.20-30',
+    '04.31-40',
+    '05.41-50',
+    '06.51-60',
+    '07.61-85',
+    '08.>85',
+    'Unknown'
+  ];
+
   const searchBoxLocations = getLocationsForSearchBox(state, props);
   const title = config[ConfigPropName.TITLE];
   const description = config[ConfigPropName.DESCRIPTION];
@@ -710,6 +727,19 @@ const FlowMap: React.FC<Props> = (props) => {
       type: ActionType.SET_SELECTED_LOCATIONS,
       selectedLocations,
     });
+  };
+
+  const handleChangeSelectFilter = (key: string) => (selectedChoices: string[] | undefined) => {
+    dispatch({
+      type: ActionType.SET_SELECTED_FILTER,
+      key,
+      selectedValues: selectedChoices,
+    });
+    const q = {
+      [key]: selectedChoices?.join(',')
+    };
+    router.query[key] = selectedChoices?.join(',');
+    router.push(router);
   };
 
   const handleChangeLocationFilterMode = (mode: LocationFilterMode) => {
@@ -943,6 +973,55 @@ const FlowMap: React.FC<Props> = (props) => {
       )}
       {flows && (
         <>
+
+          <Absolute top={10} right={950}>
+            <BoxStyle darkMode={darkMode}>
+              <SelectFilterBox
+                key="trip_type"
+                placeholder="Trip Type"
+                choices={tripTypeChoices}
+                selectedChoices={state.selectedFilterTripType}
+                onSelectionChanged={handleChangeSelectFilter("trip_type")}
+              />
+            </BoxStyle>
+          </Absolute>
+
+          <Absolute top={10} right={750}>
+            <BoxStyle darkMode={darkMode}>
+              <SelectFilterBox
+                key="gender"
+                placeholder="Gender"
+                choices={genderChoices}
+                selectedChoices={state.selectedFilterGender}
+                onSelectionChanged={handleChangeSelectFilter("gender")}
+              />
+            </BoxStyle>
+          </Absolute>
+
+          <Absolute top={10} right={550}>
+            <BoxStyle darkMode={darkMode}>
+              <SelectFilterBox
+                key="acct_type"
+                placeholder="Account Type"
+                choices={acctTypeChoices}
+                selectedChoices={state.selectedFilterAcctType}
+                onSelectionChanged={handleChangeSelectFilter("acct_type")}
+              />
+            </BoxStyle>
+          </Absolute>
+
+          <Absolute top={10} right={350}>
+            <BoxStyle darkMode={darkMode}>
+              <SelectFilterBox
+                key="age_range"
+                placeholder="Age Range"
+                choices={ageRangeChoices}
+                selectedChoices={state.selectedFilterAgeRange}
+                onSelectionChanged={handleChangeSelectFilter("age_range")}
+              />
+            </BoxStyle>
+          </Absolute>
+
           {searchBoxLocations && (
             <Absolute top={10} right={50}>
               <BoxStyle darkMode={darkMode}>
