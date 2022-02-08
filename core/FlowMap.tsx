@@ -635,7 +635,7 @@ const FlowMap: React.FC<Props> = (props) => {
     );
   }
 
-  const tripTypeChoices = ['overnight', 'oneday'];
+  const tripTypeChoices = ['overnight', 'oneday', 'open'];
   const genderChoices = ['M', 'F', 'U'];
   const acctTypeChoices = ['Prepaid', 'Postpaid'];
   const ageRangeChoices = [
@@ -649,6 +649,9 @@ const FlowMap: React.FC<Props> = (props) => {
     '08.>85',
     'Unknown'
   ];
+  const holidayTypeChoices = ['first weekend', 'long weekend', 'vacation', 'weekend'];
+  const holidayCovidChoices = ['low', 'high1', 'high2', 'lockdown'];
+  const holidayStartDateChoices = ['2020-06-06','2020-06-13','2020-06-20','2020-06-27','2020-07-04','2020-07-11','2020-07-18','2020-07-25','2020-08-01','2020-08-08','2020-08-15','2020-08-22','2020-08-29','2020-09-04','2020-09-12','2020-09-19','2020-09-26','2020-10-03','2020-10-10','2020-10-17','2020-10-23','2020-10-31','2020-11-07','2020-11-14','2020-11-19','2020-11-28','2020-11-29','2020-12-05','2020-12-10','2020-12-19','2020-12-26','2021-01-09','2021-01-16','2021-01-23','2021-01-30','2021-02-06','2021-02-13','2021-02-20','2021-02-26','2021-03-06','2021-03-13','2021-03-20','2021-03-27','2021-04-03','2021-04-10','2021-04-24','2021-05-01','2021-05-08','2021-05-15','2021-05-22','2021-05-29','2021-06-05','2021-06-12','2021-06-19','2021-06-20','2021-06-26','2021-07-03','2021-07-10','2021-07-11','2021-07-17','2021-07-24','2021-07-31','2021-08-07','2021-08-14','2021-08-21','2021-08-28','2021-09-04','2021-09-11','2021-09-18','2021-09-25','2021-10-02','2021-10-09','2021-10-16','2021-10-21','2021-10-30'];
 
   const searchBoxLocations = getLocationsForSearchBox(state, props);
   const title = config[ConfigPropName.TITLE];
@@ -974,7 +977,7 @@ const FlowMap: React.FC<Props> = (props) => {
       {flows && (
         <>
 
-          <Absolute top={10} right={950}>
+          <Absolute top={100} left={10}>
             <BoxStyle darkMode={darkMode}>
               <SelectFilterBox
                 key="trip_type"
@@ -986,7 +989,7 @@ const FlowMap: React.FC<Props> = (props) => {
             </BoxStyle>
           </Absolute>
 
-          <Absolute top={10} right={750}>
+          <Absolute top={100} left={10}>
             <BoxStyle darkMode={darkMode}>
               <SelectFilterBox
                 key="gender"
@@ -998,7 +1001,7 @@ const FlowMap: React.FC<Props> = (props) => {
             </BoxStyle>
           </Absolute>
 
-          <Absolute top={10} right={550}>
+          <Absolute top={150} left={10}>
             <BoxStyle darkMode={darkMode}>
               <SelectFilterBox
                 key="acct_type"
@@ -1010,7 +1013,7 @@ const FlowMap: React.FC<Props> = (props) => {
             </BoxStyle>
           </Absolute>
 
-          <Absolute top={10} right={350}>
+          <Absolute top={200} left={10}>
             <BoxStyle darkMode={darkMode}>
               <SelectFilterBox
                 key="age_range"
@@ -1018,6 +1021,42 @@ const FlowMap: React.FC<Props> = (props) => {
                 choices={ageRangeChoices}
                 selectedChoices={state.selectedFilterAgeRange}
                 onSelectionChanged={handleChangeSelectFilter("age_range")}
+              />
+            </BoxStyle>
+          </Absolute>
+
+          <Absolute top={250} left={10}>
+            <BoxStyle darkMode={darkMode}>
+              <SelectFilterBox
+                key="holiday_type"
+                placeholder="Holiday Type"
+                choices={holidayTypeChoices}
+                selectedChoices={state.selectedFilterHolidayType}
+                onSelectionChanged={handleChangeSelectFilter("holiday_type")}
+              />
+            </BoxStyle>
+          </Absolute>
+
+          <Absolute top={300} left={10}>
+            <BoxStyle darkMode={darkMode}>
+              <SelectFilterBox
+                key="holiday_covid"
+                placeholder="Covid situation"
+                choices={holidayCovidChoices}
+                selectedChoices={state.selectedFilterHolidayCovid}
+                onSelectionChanged={handleChangeSelectFilter("holiday_covid")}
+              />
+            </BoxStyle>
+          </Absolute>
+
+          <Absolute top={350} left={10}>
+            <BoxStyle darkMode={darkMode}>
+              <SelectFilterBox
+                key="holiday_start_date"
+                placeholder="Holiday dates"
+                choices={holidayStartDateChoices}
+                selectedChoices={state.selectedFilterHolidayStartDate}
+                onSelectionChanged={handleChangeSelectFilter("holiday_start_date")}
               />
             </BoxStyle>
           </Absolute>

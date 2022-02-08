@@ -87,6 +87,9 @@ export interface State {
   selectedFilterGender: string[] | undefined;
   selectedFilterAcctType: string[] | undefined;
   selectedFilterAgeRange: string[] | undefined;
+  selectedFilterHolidayType: string[] | undefined;
+  selectedFilterHolidayCovid: string[] | undefined;
+  selectedFilterHolidayStartDate: string[] | undefined;
 }
 
 export enum ActionType {
@@ -309,7 +312,6 @@ function mainReducer(state: State, action: Action): State {
       const {key, selectedValues} = action;
       const isEmpty = !selectedValues || selectedValues.length === 0;
       const selectedStateKey = titleCase(key);
-      console.log(selectedStateKey, 'selectedStateKey');
       if (isEmpty) {
         return {
           ...state,
@@ -522,6 +524,12 @@ export function applyStateFromQueryString(draft: State, params: ParsedUrlQuery) 
   draft.selectedFilterGender = asChoices(params.gender) ?? draft.selectedFilterGender;
   draft.selectedFilterAcctType = asChoices(params.acct_type) ?? draft.selectedFilterAcctType;
   draft.selectedFilterAgeRange = asChoices(params.age_range) ?? draft.selectedFilterAgeRange;
+  draft.selectedFilterHolidayType =
+    asChoices(params.holiday_type) ?? draft.selectedFilterHolidayType;
+  draft.selectedFilterHolidayCovid =
+    asChoices(params.holiday_covid) ?? draft.selectedFilterHolidayCovid;
+  draft.selectedFilterHolidayStartDate =
+    asChoices(params.holiday_start_date) ?? draft.selectedFilterHolidayStartDate;
 
   if (params.lfm != null && (params.lfm as string) in LocationFilterMode) {
     draft.locationFilterMode = params.lfm as LocationFilterMode;
@@ -629,6 +637,9 @@ export function getInitialState(config: Config, query: ParsedUrlQuery) {
     selectedFilterGender: undefined,
     selectedFilterAcctType: undefined,
     selectedFilterAgeRange: undefined,
+    selectedFilterHolidayType: undefined,
+    selectedFilterHolidayCovid: undefined,
+    selectedFilterHolidayStartDate: undefined,
   };
 
   const bbox = config[ConfigPropName.MAP_BBOX];

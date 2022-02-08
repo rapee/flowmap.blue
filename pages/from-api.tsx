@@ -88,6 +88,9 @@ export default function FromUrlFlowMapPage() {
     gender: params.gender,
     acct_type: params.acct_type,
     age_range: params.age_range,
+    holiday_type: params.holiday_type,
+    holiday_covid: params.holiday_covid,
+    holiday_start_date: params.holiday_start_date,
   };
   const flows = `${baseUrl}/flows?${stringify(q)}`;
   return typeof locationsUrl === 'string' && typeof flows === 'string' ? (
