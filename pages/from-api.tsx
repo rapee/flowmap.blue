@@ -84,6 +84,7 @@ export default function FromUrlFlowMapPage() {
   const baseUrl = url || "http://127.0.0.1:5000";
   const locationsUrl = `${baseUrl}/locations.csv`;
   const q = {
+    d: params.d,
     trip_type: params.trip_type,
     gender: params.gender,
     acct_type: params.acct_type,
