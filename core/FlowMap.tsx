@@ -977,7 +977,7 @@ const FlowMap: React.FC<Props> = (props) => {
       {flows && (
         <>
 
-          <Absolute top={100} left={10}>
+          <Absolute top={50} left={10}>
             <BoxStyle darkMode={darkMode}>
               <SelectFilterBox
                 key="trip_type"
